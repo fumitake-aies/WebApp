@@ -1,0 +1,49 @@
+services: #実行したいサービス(またはコンテナ)一覧を定義
+
+  #Java
+  app:
+    image: openjdk:23
+    hostname: app
+    container_name: app-springboot
+    ports: 
+    # 既に使用しているポートは避ける
+    - 8082:8080
+    volumes:
+    - ./simplememo:/srv:cached
+    depends_on:
+      db:
+        condition: service_started
+    entrypoint: "java -jar /srv/target/simplememo-0.0.1-SNAPSHOT.jar"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-springboot.webapp_app-net:3306/simple_memo?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: memo_user
+      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - app-net
+    # コンテナが消えないようにtrueを設定
+    tty: true
+  db: #サービス名(mysql)
+    #image: mysql:8.3
+    hostname: db-springboot
+    container_name: db-springboot
+    build: 
+      context: ./mysql
+      dockerfile: Dockerfile
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    environment: #作成するDB名,ルートユーザのパスワード,DBを操作するユーザ,タイムゾーン
+      MYSQL_DATABASE: simple_memo
+      MYSQL_ROOT_PASSWORD: root
+      #MYSQL_USER: memo_user@%
+      #MYSQL_PASSWORD: password
+      TZ: Asia/Tokyo
+    networks:
+      - app-net
+networks: #ネットワークを設定し、コンテナ間の通信を行う
+  app-net: #ネットワーク名
+    driver: bridge

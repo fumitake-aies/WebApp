@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Memos List</title>
+</head>
+<body>
+    <h1>Memos List</h1>
+    <ul>
+        <th:block th:each="memo : ${memolist}">
+            <li th:text="${memo.content}"></li>
+        </th:block>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Insert Memo</title>
+</head>
+<body>
+    <h1>Insert Memo</h1>
+    <form th:action="@{/submitinsert}" method="post">
+        <label for="memo">Memo:</label>
+        <input type="text" id="memo" name="memo" />
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
