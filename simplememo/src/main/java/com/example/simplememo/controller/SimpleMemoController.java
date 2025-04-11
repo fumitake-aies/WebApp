@@ -21,7 +21,7 @@ public class SimpleMemoController {
     }
 
 
-    @GetMapping("/memolist")
+    @GetMapping("/memolist") // メモリスト
     public ModelAndView memolist(ModelAndView modelAndView) {
         modelAndView.setViewName("memolist");
         List<Memo> memolist = memoService.findAll();
@@ -29,14 +29,14 @@ public class SimpleMemoController {
         return modelAndView;
     } 
 
-    @GetMapping("/insertmemo")
+    @GetMapping("/insertmemo") // メモ追加
     public ModelAndView insertmemo(ModelAndView modelAndView){
         modelAndView.setViewName("insertmemo");
         modelAndView.addObject("insertmemo");
         return modelAndView;
     }
 
-    @PostMapping("/submitinsert")
+    @PostMapping("/submitinsert") // メモ追加登録
     public ModelAndView submitinsert(@RequestParam("memo") String memoText){
         ModelAndView modelAndView = new ModelAndView("memolist");
         Memo memo = new Memo(0, memoText ,LocalDateTime.now(), LocalDateTime.now());
