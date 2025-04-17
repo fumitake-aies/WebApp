@@ -4,11 +4,19 @@
     <title>Memos List</title>
 </head>
 <body>
-    <h1>Memos List</h1>
-    <ul>
-        <th:block th:each="memo : ${memolist}">
-            <li th:text="${memo.content}"></li>
-        </th:block>
-    </ul>
+        <h1>Memos List</h1>
+        <form action="/deletememo" method="post">
+            <ol>
+                <th:block th:each="memo : ${memolist}">
+                    <li>
+                        <input type="checkbox" name="ids" th:value="${memo.id}">
+                        <span th:text="${memo.content}"></span>
+                    </li>
+                </th:block>
+            </ol>
+            <button type="submit">選択したメモを削除</button>
+        </form>
+    <br>
+    <a href="/insertmemo">メモを追加する</a>
 </body>
 </html>

@@ -10,6 +10,10 @@ public class Memo {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // 追加：デフォルトコンストラクタ（必要！）
+    public Memo() {
+    }
+
     public Memo(int id, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.content = content;

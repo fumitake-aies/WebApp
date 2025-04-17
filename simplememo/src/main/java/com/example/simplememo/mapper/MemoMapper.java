@@ -22,4 +22,9 @@ public interface MemoMapper {
 
     @Delete("DELETE FROM memos WHERE id=#{id}")
     void delete(int id);
+
+    @Delete("<script>DELETE FROM memos WHERE id IN "
+    + "<foreach item='id' collection='list' open='(' separator=',' close=')'>#{id}</foreach>"
+    + "</script>")
+    void deleteMultiple(List<Integer> ids);
 }

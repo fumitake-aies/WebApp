@@ -33,4 +33,11 @@ public class MemoService {
     public void delete(int id) {
         memoMapper.delete(id);
     }
+
+    public void deleteMultiple(List<Integer> ids) {
+        if (ids != null && !ids.isEmpty()) {
+            memoMapper.deleteMultiple(ids);
+       }
+    }
+    
 }

@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
@@ -42,6 +40,15 @@ public class SimpleMemoController {
         Memo memo = new Memo(0, memoText ,LocalDateTime.now(), LocalDateTime.now());
         memoService.insert(memo);
         return memolist(modelAndView); 
+    }
+
+    @PostMapping("/deletememo")
+    public ModelAndView deletememo(@RequestParam(value = "ids",defaultValue = "0")List<Integer> ids){
+        if (ids.size() == 0 || ids.isEmpty()) {
+            return new ModelAndView("redirect:/memolist");
+        }
+        memoService.deleteMultiple(ids);
+        return new ModelAndView("redirect:/memolist");
     }
 }
 
