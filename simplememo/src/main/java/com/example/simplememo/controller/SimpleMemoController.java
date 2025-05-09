@@ -3,45 +3,63 @@ package com.example.simplememo.controller;
 import com.example.simplememo.model.Memo;
 import com.example.simplememo.service.MemoService;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.servlet.ModelAndView;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Controller
 public class SimpleMemoController {
+
     private final MemoService memoService;
+
     public SimpleMemoController(MemoService memoService) {
         this.memoService = memoService;
     }
 
-
-    @GetMapping("/memolist") // メモリスト
-    public ModelAndView memolist(ModelAndView modelAndView) {
-        modelAndView.setViewName("memolist");
-        List<Memo> memolist = memoService.findAll();
-        modelAndView.addObject("memolist", memolist);        
-        return modelAndView;
-    } 
-
-    @GetMapping("/insertmemo") // メモ追加
-    public ModelAndView insertmemo(ModelAndView modelAndView){
-        modelAndView.setViewName("insertmemo");
-        modelAndView.addObject("insertmemo");
-        return modelAndView;
+    @GetMapping("/insertmemo")
+    public ModelAndView insertmemo() {
+        ModelAndView mav = new ModelAndView("insertmemo");
+        mav.addObject("memo", new Memo());
+        return mav;
     }
 
-    @PostMapping("/submitinsert") // メモ追加登録
-    public ModelAndView submitinsert(@RequestParam("memo") String memoText){
-        ModelAndView modelAndView = new ModelAndView("memolist");
-        Memo memo = new Memo(0, memoText ,LocalDateTime.now(), LocalDateTime.now());
+    @PostMapping("/submitinsert")
+    public ModelAndView submitinsert(@ModelAttribute("memo") @Valid Memo memo, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            ModelAndView mav = new ModelAndView("insertmemo");
+            mav.addObject("memo", memo);
+            return mav;
+        }
+
+        memo.setCreatedAt(LocalDateTime.now());
+        memo.setUpdatedAt(LocalDateTime.now());
         memoService.insert(memo);
-        return memolist(modelAndView); 
+        return new ModelAndView("redirect:/memolist");
     }
 
+    @GetMapping("/memolist")
+    public ModelAndView memolist() {
+        ModelAndView mav = new ModelAndView("memolist");
+        mav.addObject("memolist", memoService.findAll());
+        return mav;
+    }
+
+    /*@PostMapping("/deletememo")
+    public ModelAndView deleteMemo(@RequestParam(value = "ids", defaultValue = "0") List<Integer> ids, BindingResult result) {
+        if (result.hasErrors()) {
+            result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
+        }
+        if (ids != null && !ids.isEmpty()) {
+            memoService.deleteMultiple(ids);
+        }
+        return new ModelAndView("redirect:/memolist");
+    }
+*/
     @PostMapping("/deletememo")
     public ModelAndView deletememo(@RequestParam(value = "ids",defaultValue = "0")List<Integer> ids){
         if (ids.size() == 0 || ids.isEmpty()) {
@@ -50,6 +68,7 @@ public class SimpleMemoController {
         memoService.deleteMultiple(ids);
         return new ModelAndView("redirect:/memolist");
     }
+
 }
 
 

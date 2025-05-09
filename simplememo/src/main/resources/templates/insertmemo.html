@@ -2,13 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Insert Memo</title>
+    <meta charset="UTF-8" />
 </head>
 <body>
     <h1>Insert Memo</h1>
-    <form th:action="@{/submitinsert}" method="post">
+
+    <!-- バリデーションのために th:object を指定 -->
+    <form th:action="@{/submitinsert}" th:object="${memo}" method="post">
         <label for="memo">Memo:</label>
-        <input type="text" id="memo" name="memo" />
+        <!-- th:field で content フィールドとバインド -->
+        <input type="text" id="memo" th:field="*{content}" />
+
+        <!-- バリデーションエラーがある場合に表示 -->
+        <div th:if="${#fields.hasErrors('content')}" style="color:red;">
+            <p th:errors="*{content}">入力エラー</p>
+        </div>
+
         <button type="submit">Submit</button>
     </form>
+
+    <p><a href="/memolist">メモ一覧へ戻る</a></p>
 </body>
 </html>
